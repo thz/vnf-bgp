@@ -12,6 +12,6 @@ FROM osrg/quagga as runstage
 COPY --from=buildstage /go/bin/gobgp /usr/bin
 COPY --from=buildstage /go/bin/gobgpd /usr/bin
 
-RUN apt-get update -y && apt-get install -y iproute2 iputils-ping vim tcpdump socat strace
+RUN apt-get update -y && apt-get install -y iproute2 iputils-ping vim tcpdump socat strace ldnsutils
 
 ENTRYPOINT [ "bash" ]
