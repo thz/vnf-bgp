@@ -14,6 +14,7 @@ set_defaults() {
 validate_input() {
 	[ -z "$BGP_LOCAL_AS" ] && die "BGP_LOCAL_AS not set."
 	[ -z "$BGP_ROUTER_ID" ] && die "BGP_ROUTER_ID not set."
+	true
 }
 
 create_config_part1() {
@@ -39,12 +40,17 @@ EOF
 		route-disposition = "accept-route"
 EOF
 	fi
+	true
 }
 
 run_bgpd() {
+	echo "applying defaults..."
 	set_defaults
+	echo "validating input..."
 	validate_input
+	echo "creating configuration..."
 	create_config_part1 > /run/bgpd-config.toml
+	echo "executing bgp daemon..."
 	exec /usr/bin/gobgpd -f /run/bgpd-config.toml
 }
 
@@ -60,11 +66,15 @@ announce() {
 	echo "announce done."
 }
 
-command="$1" ; shift
+command="$1"
 
 if [ -z "$command" ]; then
 	run_bgpd
-elif [ "$command" = announce ]; then
+	exit 0
+fi
+shift # command
+
+if [ "$command" = announce ]; then
 	announce "$@"
 fi
 
