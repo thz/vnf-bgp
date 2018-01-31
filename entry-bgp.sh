@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -40,6 +40,23 @@ EOF
 		route-disposition = "accept-route"
 EOF
 	fi
+
+	if [ -n "$BGP_NEIGHBOR_COUNT" ]; then
+		echo "[[neighbors]]"
+		idx=0
+		while [ "$BGP_NEIGHBOR_COUNT" -gt $idx ]; do
+			var_neighbor_as="BGP_0_NEIGHBOR_${idx}_AS"
+			var_neighbor_peer="BGP_0_NEIGHBOR_${idx}_PEER"
+			cat << EOF
+  [neighbors.config]
+    neighbor-address = "${!var_neighbor_peer}"
+    peer-as = ${!var_neighbor_as}
+
+EOF
+			idx=$((idx+1))
+		done
+	fi
+
 	true
 }
 
@@ -50,6 +67,9 @@ run_bgpd() {
 	validate_input
 	echo "creating configuration..."
 	create_config_part1 > /run/bgpd-config.toml
+	echo "config >>>>"
+	cat /run/bgpd-config.toml
+	echo "config <<<<"
 	echo "executing bgp daemon..."
 	exec /usr/bin/gobgpd -f /run/bgpd-config.toml
 }
