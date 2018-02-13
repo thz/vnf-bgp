@@ -41,20 +41,20 @@ EOF
 EOF
 	fi
 
-	if [ -n "$BGP_NEIGHBOR_COUNT" ]; then
-		echo "[[neighbors]]"
-		idx=0
-		while [ "$BGP_NEIGHBOR_COUNT" -gt $idx ]; do
-			var_neighbor_as="BGP_0_NEIGHBOR_${idx}_AS"
-			var_neighbor_peer="BGP_0_NEIGHBOR_${idx}_PEER"
+	if [ -n "$BGP_NEIGHBORS" ]; then
+		IFS=,
+		for neighbor in $BGP_NEIGHBORS; do
+			as=${neighbor%%@*}
+			peer=${neighbor##*@}
 			cat << EOF
+[[neighbors]]
   [neighbors.config]
-    neighbor-address = "${!var_neighbor_peer}"
-    peer-as = ${!var_neighbor_as}
+    neighbor-address = "${peer}"
+    peer-as = ${as}
 
 EOF
-			idx=$((idx+1))
 		done
+		unset IFS
 	fi
 
 	true
