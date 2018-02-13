@@ -71,6 +71,16 @@ run_bgpd() {
 	cat /run/bgpd-config.toml
 	echo "config <<<<"
 	echo "executing bgp daemon..."
+
+	# start a background process to inject routes after gobgpd started
+	if [ -n "$BGP_STATIC_ROUTES" ]; then
+		echo "going to inject to rib: $BGP_STATIC_ROUTES"
+		nohup env routes="$BGP_STATIC_ROUTES" \
+			bash -c "IFS=, ; \
+			for r in \$routes; do \
+				/usr/bin/gobgp global rib add -a ipv4 \$r origin egp ; \
+			done" > /dev/null 2>&1 &
+	fi
 	exec /usr/bin/gobgpd -f /run/bgpd-config.toml
 }
 

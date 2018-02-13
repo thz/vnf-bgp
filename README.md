@@ -23,3 +23,6 @@ Alternatively it is (will be) also possible to point $ENVFILE to an environment 
 ENVFILE=
 
 BGP_ROUTER_ID=192.0.2.1
+
+# statically inject routes into global rib immediately after startup:
+BGP_STATIC_ROUTES=192.0.2.0/28,192.0.2.128/25
