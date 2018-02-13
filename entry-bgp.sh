@@ -98,6 +98,8 @@ announce() {
 
 command="$1"
 
+[ -n "$ENVFILE" ] && . "$ENVFILE"
+
 if [ -z "$command" ]; then
 	run_bgpd
 	exit 0
