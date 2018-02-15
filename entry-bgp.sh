@@ -81,6 +81,7 @@ enable password zebra
 line vty
 log stdout debugging
 EOF
+	true
 }
 
 run_bgpd() {
