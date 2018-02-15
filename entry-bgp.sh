@@ -57,31 +57,67 @@ EOF
 		unset IFS
 	fi
 
+	if [ -n "$BGP_FIB_MANIPULATION" ]; then
+		cat << EOF
+[zebra]
+  [zebra.config]
+    enabled = true
+    #url = "tcp:127.0.0.1:2601"
+    url = "unix:/var/run/quagga/zserv.api"
+    version = 2
+    redistribute-route-type-list = ["connect"]
+EOF
+	fi
+
 	true
 }
 
+create_zebra_config() {
+	cat << EOF
+hostname zebra
+no ipv6 forwarding
+password zebra
+enable password zebra
+line vty
+log stdout debugging
+EOF
+}
+
 run_bgpd() {
-	echo "applying defaults..."
+	echo "Applying defaults..."
 	set_defaults
-	echo "validating input..."
+	echo "Validating input..."
 	validate_input
-	echo "creating configuration..."
+	echo "Creating configuration..."
 	create_config_part1 > /run/bgpd-config.toml
-	echo "config >>>>"
+	printf ">>> bgpd configuration >>>>>>>>>>>>>>>>>\n"
 	cat /run/bgpd-config.toml
-	echo "config <<<<"
-	echo "executing bgp daemon..."
+	printf "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n"
+
+	if [ -n "$BGP_FIB_MANIPULATION" ]; then
+		printf ">>> zebra configuration >>>>>>>>>>>>>>>>>\n"
+		create_zebra_config |tee /run/zebra.conf
+		printf "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n"
+		echo "Starting fib manipulator..."
+		/usr/lib/quagga/zebra --daemon --config_file /run/zebra.conf
+		sleep 3
+		printf "Done.\n\n"
+	fi
 
 	# start a background process to inject routes after gobgpd started
 	if [ -n "$BGP_STATIC_ROUTES" ]; then
-		echo "going to inject to rib: $BGP_STATIC_ROUTES"
+		echo "Going to inject to rib: $BGP_STATIC_ROUTES"
 		nohup env routes="$BGP_STATIC_ROUTES" \
 			bash -c "IFS=, ; \
+			sleep 1 ; \
 			for r in \$routes; do \
 				/usr/bin/gobgp global rib add -a ipv4 \$r origin egp ; \
 			done" > /dev/null 2>&1 &
 	fi
+
+	echo "executing bgp daemon..."
 	exec /usr/bin/gobgpd -f /run/bgpd-config.toml
+	# FIXME have some kind of supervisor with health-endpoint et al
 }
 
 announce() {
