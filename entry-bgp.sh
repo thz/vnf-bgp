@@ -117,7 +117,8 @@ run_bgpd() {
 	fi
 
 	echo "executing bgp daemon..."
-	exec /usr/bin/gobgpd -f /run/bgpd-config.toml
+	/usr/bin/gobgpd -f /run/bgpd-config.toml &
+	while true; do sleep 1 ; done
 	# FIXME have some kind of supervisor with health-endpoint et al
 }
 
