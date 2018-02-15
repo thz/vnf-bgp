@@ -64,7 +64,7 @@ EOF
     enabled = true
     #url = "tcp:127.0.0.1:2601"
     url = "unix:/var/run/quagga/zserv.api"
-    version = 2
+    version = 3
     redistribute-route-type-list = ["connect"]
 EOF
 	fi
