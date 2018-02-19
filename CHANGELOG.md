@@ -1,3 +1,7 @@
+## 1.0.1 / 2018-02-19
+
+* Use golang:1.9 as base for gobgp
+
 ## 1.0.0 / 2018-02-19
 
 This is the initial release.
