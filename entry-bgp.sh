@@ -63,8 +63,8 @@ EOF
   [zebra.config]
     enabled = true
     #url = "tcp:127.0.0.1:2601"
-    url = "unix:/var/run/quagga/zserv.api"
-    version = 3
+    url = "unix:/run/frr/zserv.api"
+    version = 4
     redistribute-route-type-list = ["connect"]
 EOF
 	fi
@@ -100,7 +100,7 @@ run_bgpd() {
 		create_zebra_config |tee /run/zebra.conf
 		printf "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n"
 		echo "Starting fib manipulator..."
-		/usr/lib/quagga/zebra --daemon --config_file /run/zebra.conf
+		/usr/lib/frr/zebra --config_file /run/zebra.conf &
 		sleep 3
 		printf "Done.\n\n"
 	fi
