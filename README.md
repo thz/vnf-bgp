@@ -55,3 +55,13 @@ BGP_FIB_ANNOUNCE=yes
 
 # maximum acceptable as-path length
 BGP_MAX_PATH=1
+
+### Caveats and Pitfalls
+
+Routes pushed towards FIB maniupulation are considered "inactive" unless the next hop is considered directly connected by the FIB manipulator (currently being Frr/Zebra). Routes in the kernel table are not enough for being "directly connected". When you have your next hop connected via a vti interface without having an IP address in that network you can "connect" your neighbor with the peer specification of `ip addr add`:
+
+```
+ip addr add YOUR_IP/32 peer YOUR_PEER dev vti42
+```
+
+This will make YOUR_PEER appear as directly connected and allow FIB propagation to the kernel table(s).
