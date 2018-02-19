@@ -65,8 +65,12 @@ EOF
     #url = "tcp:127.0.0.1:2601"
     url = "unix:/run/frr/zserv.api"
     version = 4
-    redistribute-route-type-list = ["connect"]
 EOF
+		if [ -n "$BGP_FIB_ANNOUNCE" ]; then
+			echo '    redistribute-route-type-list = ["connect"]'
+		else
+			echo '    redistribute-route-type-list = []'
+		fi
 	fi
 
 	true
