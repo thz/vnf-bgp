@@ -1,4 +1,4 @@
-FROM golang:1.8 as buildstage
+FROM golang:1.9 as buildstage
 
 ENV GOPATH /go
 WORKDIR /go
