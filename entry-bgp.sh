@@ -122,8 +122,20 @@ run_bgpd() {
 
 	echo "executing bgp daemon..."
 	/usr/bin/gobgpd -f /run/bgpd-config.toml &
-	while true; do sleep 1 ; done
-	# FIXME have some kind of supervisor with health-endpoint et al
+	while true; do
+		# Poor man's supervisor.
+		if [ -n "$BGP_FIB_MANIPULATION" ]; then
+			if ! pidof zebra > /dev/null; then
+				echo "Zebra died. Terminating."
+				exit 1
+			fi
+		fi
+		if ! pidof gobgpd > /dev/null; then
+			echo "Gobgpd died. Terminating."
+			exit 1
+		fi
+		sleep 1
+	done
 }
 
 announce() {
