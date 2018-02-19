@@ -1,3 +1,7 @@
+## 1.0.2 / 2018-02-19
+
+* Terminate when FIB manipulator (zebra) or BGPd (gobgpd) terminates.
+
 ## 1.0.1 / 2018-02-19
 
 * Use golang:1.9 as base for gobgp
