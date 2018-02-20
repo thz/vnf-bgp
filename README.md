@@ -55,6 +55,7 @@ BGP_FIB_ANNOUNCE=yes
 
 # maximum acceptable as-path length
 BGP_MAX_PATH=1
+```
 
 ### Caveats and Pitfalls
 
