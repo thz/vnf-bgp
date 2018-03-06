@@ -51,8 +51,12 @@ EOF
   [neighbors.config]
     neighbor-address = "${peer}"
     peer-as = ${as}
-
 EOF
+			if [ -n "$BGP_AUTHPASSWORD" ]; then
+			cat << EOF
+    auth-password = "$BGP_AUTHPASSWORD"
+EOF
+			fi
 		done
 		unset IFS
 	fi

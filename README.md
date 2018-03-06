@@ -55,6 +55,10 @@ BGP_FIB_ANNOUNCE=yes
 
 # maximum acceptable as-path length
 BGP_MAX_PATH=1
+
+# BGP authentication password. Shared over all neighbors
+# (Currently only one shared password for all neighbors.)
+BGP_AUTHPASSWORD=secret
 ```
 
 ### Caveats and Pitfalls
