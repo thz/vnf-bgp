@@ -1,3 +1,8 @@
+## 1.1.0 / 2018-03-06
+
+* Added BGP_AUTHPASSWORD config for bgp authentication
+* Improve teardown time (SIGTERM handler).
+
 ## 1.0.3 / 2018-02-20
 
 * Added a delay after starting BGPd to prevent watchdog barking before real startup.
