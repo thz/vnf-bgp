@@ -2,6 +2,11 @@
 
 set -e
 
+term() {
+	echo "Terminating..."
+	exit 0
+}
+
 die() {
 	echo "$@"
 	exit 1
@@ -127,6 +132,7 @@ run_bgpd() {
 	echo "executing bgp daemon..."
 	/usr/bin/gobgpd -f /run/bgpd-config.toml &
 	sleep 3
+	trap term TERM
 	while true; do
 		# Poor man's supervisor.
 		if [ -n "$BGP_FIB_MANIPULATION" ]; then
