@@ -1,3 +1,7 @@
+## 1.2.0 / 2018-03-08
+
+* Allow per neighbor configuration with BGP_NEIGHBOR_*
+
 ## 1.1.0 / 2018-03-06
 
 * Added BGP_AUTHPASSWORD config for bgp authentication

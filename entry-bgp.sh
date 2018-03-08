@@ -46,6 +46,7 @@ EOF
 EOF
 	fi
 
+	# "simple" neighbor specification
 	if [ -n "$BGP_NEIGHBORS" ]; then
 		IFS=,
 		for neighbor in $BGP_NEIGHBORS; do
@@ -58,12 +59,36 @@ EOF
     peer-as = ${as}
 EOF
 			if [ -n "$BGP_AUTHPASSWORD" ]; then
-			cat << EOF
-    auth-password = "$BGP_AUTHPASSWORD"
-EOF
+				printf "auth-password = \"${BGP_AUTHPASSWORD}\"\n"
 			fi
 		done
 		unset IFS
+	fi
+
+	# per neighbor configuration
+	if [ -n "$BGP_NEIGHBOR_COUNT" ]; then
+		printf "\n# $BGP_NEIGHBOR_COUNT (additional) neighbor(s):\n"
+		idx=-1
+		while [ $(( ++idx )) -lt "$BGP_NEIGHBOR_COUNT" ]; do
+			printf "# BGP_NEIGHBOR_$idx:\n"
+			vn_as="BGP_NEIGHBOR_${idx}_PEERAS"
+			vn_address="BGP_NEIGHBOR_${idx}_ADDRESS"
+			vn_authpassword="BGP_NEIGHBOR_${idx}_AUTHPASSWORD"
+			vn_local_as="BGP_NEIGHBOR_${idx}_LOCAL_AS"
+			cat << EOF
+[[neighbors]]
+  [neighbors.config]
+    neighbor-address = "${!vn_address}"
+    peer-as = ${!vn_as}
+EOF
+			if [ -n "${!vn_local_as}" ]; then
+				printf "    local-as = ${!vn_local_as}\n"
+			fi
+			if [ -n "${!vn_authpassword}" ]; then
+				printf "    auth-password = \"${!vn_authpassword}\"\n"
+			fi
+			printf "\n\n"
+		done
 	fi
 
 	if [ -n "$BGP_FIB_MANIPULATION" ]; then

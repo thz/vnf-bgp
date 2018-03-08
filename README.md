@@ -43,6 +43,19 @@ BGP_ROUTER_ID=192.0.2.1
 # (comma separated list of AS/ip pairs):
 BGP_NEIGHBORS=65010@192.0.2.10,65020@192.0.2.20
 
+# The more sophisticated way of specifying neighbors
+# this allows more neighbor specific options. Counting
+# starts at zero.
+# (These neighbors will be added in addition to $BGP_NEIGHBORS)
+BGP_NEIGHBOR_COUNT=3
+BGP_NEIGHBOR_0_PEERAS=65030
+BGP_NEIGHBOR_0_ADDRESS=192.0.2.30
+BGP_NEIGHBOR_0_AUTHPASSWORD=secret
+BGP_NEIGHBOR_0_LOCAL_AS=64999
+BGP_NEIGHBOR_0_MAX_IMPORT_PATH_LENGTH=1 (not yet implemented)
+BGP_NEIGHBOR_1_...
+BGP_NEIGHBOR_2_...
+
 # statically inject routes into global rib immediately after startup:
 BGP_STATIC_ROUTES=192.0.2.0/28,192.0.2.128/25
 
@@ -53,7 +66,9 @@ BGP_FIB_MANIPULATION=yes
 # (only applicable with BGP_FIB_MANIPULATION enabled)
 BGP_FIB_ANNOUNCE=yes
 
-# maximum acceptable as-path length
+# maximum acceptable as-path length for imports
+# This option is deprecated. Use per neighbor config
+# instead (as soon as it is implemented).
 BGP_MAX_PATH=1
 
 # BGP authentication password. Shared over all neighbors
